@@ -19,4 +19,5 @@ def test_token_dict_missing_returns_wrapped_key():
 def test_llm_reexport_still_works():
     from django_ai_core.llm import Prompt as LegacyPrompt
     from django_ai_core.prompt import Prompt as NewPrompt
+
     assert LegacyPrompt is NewPrompt

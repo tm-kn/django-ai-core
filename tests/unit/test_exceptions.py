@@ -38,13 +38,16 @@ def test_message():
 
 def test_cause_chaining():
     root = ValueError("boom")
-    try:
+
+    def raiser():
         try:
             raise root
         except ValueError as e:
             raise ProviderUnexpectedError("net down") from e
-    except ProviderUnexpectedError as caught:
-        assert caught.__cause__ is root
+
+    with pytest.raises(ProviderUnexpectedError) as exc_info:
+        raiser()
+    assert exc_info.value.__cause__ is root
 
 
 def test_exceptions_are_exported_from_package():

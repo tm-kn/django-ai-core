@@ -1,4 +1,5 @@
 """Back-compat re-export. Canonical home: django_ai_core.prompt."""
+
 import warnings
 
 from django_ai_core.prompt import Prompt, TokenDict
