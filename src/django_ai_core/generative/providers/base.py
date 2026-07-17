@@ -1,9 +1,4 @@
-"""Provider abstract classes for the generative module.
-
-Two narrow interfaces, split because the underlying jobs are split:
-generative completions vs. embeddings. A single concrete provider class
-may implement both if a real backend does both jobs.
-"""
+"""Provider abstract class for the generative module."""
 
 from abc import ABC, abstractmethod
 from collections.abc import AsyncIterator, Iterator
@@ -58,15 +53,3 @@ class GenerativeProvider(ABC):
             f"{type(self).__name__} does not implement async streaming"
         )
         yield  # pragma: no cover
-
-
-class EmbeddingProvider(ABC):
-    """Embed inputs into vector representations."""
-
-    @abstractmethod
-    def embedding(self, input: Any, **kwargs: Any) -> Any:
-        """Synchronous embedding."""
-
-    @abstractmethod
-    async def aembedding(self, input: Any, **kwargs: Any) -> Any:
-        """Async embedding."""
