@@ -3,11 +3,15 @@ from types import SimpleNamespace
 import pytest
 from any_llm.exceptions import ProviderError, RateLimitError
 
-from django_ai_core.anyllm import fill_usage, translate_error, translate_errors
 from django_ai_core.exceptions import (
     AICoreProviderError,
     ProviderRateLimitError,
     ProviderUnexpectedError,
+)
+from django_ai_core.providers.anyllm import (
+    fill_usage,
+    translate_error,
+    translate_errors,
 )
 from django_ai_core.usage import UsageCapture
 

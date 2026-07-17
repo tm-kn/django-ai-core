@@ -23,7 +23,7 @@ from collections.abc import AsyncIterator, Iterator
 
 from any_llm import AnyLLM
 
-from django_ai_core.anyllm import fill_usage, translate_errors
+from django_ai_core.providers.anyllm import fill_usage, translate_errors
 from django_ai_core.usage import UsageCapture
 
 from ...exceptions import ProviderResponseError

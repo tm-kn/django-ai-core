@@ -17,7 +17,7 @@ from typing import Any
 
 import any_llm
 
-from django_ai_core.anyllm import translate_errors
+from django_ai_core.providers.anyllm import translate_errors
 
 from .base import EmbeddingProvider
 
