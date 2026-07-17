@@ -31,7 +31,7 @@ from django_ai_core.generative.providers.anyllm import (
     _message_text,
     build_messages,
 )
-from django_ai_core.generative.providers.base import UsageCapture
+from django_ai_core.usage import UsageCapture
 
 # --- build_messages -------------------------------------------------------
 
