@@ -8,12 +8,13 @@ vendor, stay on the [service layer](index.md#choosing-a-layer) instead.
 
 ## The interfaces
 
-Two abstract classes live in `django_ai_core.generative`, split because the jobs are split:
+Two abstract classes, one per job, split because the jobs are split:
 
-- `GenerativeProvider` — text completions.
-- `EmbeddingProvider` — vector embeddings.
+- `GenerativeProvider` (in `django_ai_core.generative`) — text completions.
+- `EmbeddingProvider` (in `django_ai_core.embedding`) — vector embeddings.
 
-One class may implement both if the backend does both jobs.
+The packages never import each other. One class may implement both by
+subclassing each ABC from its own package if the backend does both jobs.
 
 ### GenerativeProvider
 
