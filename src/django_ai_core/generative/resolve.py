@@ -10,8 +10,9 @@ from typing import TypeVar
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.module_loading import import_string
 
+from django_ai_core.settings import get_embedding_models, get_generative_models
+
 from .providers import EmbeddingProvider, GenerativeProvider
-from .settings import get_embedding_models, get_generative_models
 
 G = TypeVar("G", bound=GenerativeProvider)
 E = TypeVar("E", bound=EmbeddingProvider)
