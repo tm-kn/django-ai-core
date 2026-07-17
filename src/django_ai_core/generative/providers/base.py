@@ -7,22 +7,9 @@ may implement both if a real backend does both jobs.
 
 from abc import ABC, abstractmethod
 from collections.abc import AsyncIterator, Iterator
-from dataclasses import dataclass
 from typing import Any
 
-
-@dataclass
-class UsageCapture:
-    """Best-effort token-usage sink passed into a provider stream.
-
-    A provider populates whatever usage it can read locally, synchronously
-    (no ``await``), at every exit path. Fields stay ``None`` when unavailable —
-    e.g. a stream cancelled before its terminal usage frame arrived. The
-    consuming service reads this in its own ``finally`` for lifecycle logging.
-    """
-
-    input_tokens: int | None = None
-    output_tokens: int | None = None
+from django_ai_core.usage import UsageCapture
 
 
 class GenerativeProvider(ABC):
@@ -70,7 +57,7 @@ class GenerativeProvider(ABC):
         raise NotImplementedError(
             f"{type(self).__name__} does not implement async streaming"
         )
-        yield  # noqa: unreachable
+        yield  # pragma: no cover
 
 
 class EmbeddingProvider(ABC):

@@ -46,6 +46,8 @@ from any_llm.exceptions import (
     UpstreamProviderError,
 )
 
+from django_ai_core.usage import UsageCapture
+
 from ...exceptions import (
     AICoreProviderError,
     ProviderConfigurationError,
@@ -55,7 +57,7 @@ from ...exceptions import (
     ProviderUnavailableError,
     ProviderUnexpectedError,
 )
-from .base import GenerativeProvider, UsageCapture
+from .base import GenerativeProvider
 
 # Maps any-llm's unified exceptions to our semantic ``AICoreProviderError`` types,
 # giving consumers a stable contract while leaving any-llm's own exceptions
