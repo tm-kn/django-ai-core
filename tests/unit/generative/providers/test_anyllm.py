@@ -15,6 +15,8 @@ from any_llm.exceptions import (
 )
 from any_llm.types.completion import ChatCompletion, ChatCompletionChunk
 
+from django_ai_core.anyllm import translate_error as _translate
+from django_ai_core.anyllm import translate_errors as _translate_errors
 from django_ai_core.generative import (
     ProviderConfigurationError,
     ProviderRateLimitError,
@@ -27,8 +29,6 @@ from django_ai_core.generative.providers.anyllm import (
     AnyLLMProvider,
     _delta_text,
     _message_text,
-    _translate,
-    _translate_errors,
     build_messages,
 )
 from django_ai_core.generative.providers.base import UsageCapture
