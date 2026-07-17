@@ -57,15 +57,12 @@ from ...exceptions import (
 )
 from .base import GenerativeProvider, UsageCapture
 
-# Unified any-llm exception -> semantic AICoreProviderError. any-llm normalises
-# every vendor's failure into these types, so mapping is provider-agnostic: no
-# vendor SDK import needed. any-llm's ``ProviderError`` is its own junk drawer:
-# raw transport failures (connection/timeout/network), 5xx server errors, and
-# anything it couldn't classify all land there, with no way to tell them apart
-# short of sniffing SDK class names. We refuse to guess and map the whole bucket
-# to ProviderUnexpectedError. Anything not matched here (content/finish-reason
-# errors, non-AnyLLMError exceptions) also becomes ProviderUnexpectedError via
-# _translate's fallback.
+# Maps any-llm's unified exceptions to our semantic ``AICoreProviderError`` types,
+# giving consumers a stable contract while leaving any-llm's own exceptions
+# catchable for those who want finer control. any-llm's ``ProviderError`` is a
+# catch-all (transport failures, 5xx, unclassified) we can't split without
+# sniffing SDK class names, so it maps whole to ``ProviderUnexpectedError`` — as
+# does anything unmatched, via _translate's fallback.
 _EXCEPTION_MAP = (
     (RateLimitError, ProviderRateLimitError),
     (GatewayTimeoutError, ProviderTimeoutError),
@@ -129,12 +126,10 @@ def build_messages(
 
 
 # any-llm normalises every provider's response to the OpenAI-shaped
-# ``ChatCompletion`` / ``ChatCompletionChunk`` (its types subclass the openai
-# SDK's), so the extraction paths below are vendor-uniform: a completion always
-# exposes ``.choices[0].message.content`` and a stream chunk
-# ``.choices[0].delta.content``, regardless of the underlying provider. Only the
-# *error* path is handled by ``_translate``. test_anyllm asserts this against
-# real any-llm types.
+# ``ChatCompletion`` / ``ChatCompletionChunk``, so the extraction paths below are
+# vendor-uniform: ``.choices[0].message.content`` for a completion,
+# ``.choices[0].delta.content`` for a stream chunk. test_anyllm asserts this
+# against real any-llm types.
 def _delta_text(chunk: object) -> str:
     """Extract incremental text from a streaming chunk, tolerating gaps."""
     try:
@@ -150,11 +145,9 @@ def _message_text(response: object) -> str:
 def _fill_usage(capture: UsageCapture, chunk: object) -> None:
     """Copy any usage on this chunk into ``capture`` (best-effort, no raise).
 
-    any-llm sets ``.usage`` (OpenAI-shaped: ``prompt_tokens`` /
-    ``completion_tokens``) only on the terminal chunk of a clean finish. This is
-    the sole confinement point for any-llm's untyped surface: we read ``Any``
-    here and write typed ``int | None`` onto ``capture``. A cancelled stream
-    never reaches the terminal chunk, so ``capture`` stays ``None``."""
+    any-llm sets ``.usage`` (``prompt_tokens`` / ``completion_tokens``) only on
+    the terminal chunk of a clean finish. A cancelled stream never reaches it, so
+    ``capture`` stays ``None``."""
     usage = getattr(chunk, "usage", None)
     if usage is None:
         return

@@ -63,12 +63,8 @@ def test_build_messages_includes_history_then_prompt():
 
 
 # --- unified any-llm exception mapping ------------------------------------
-#
-# any-llm (with unified exceptions enabled) normalises every vendor's failure
-# into its own AnyLLMError hierarchy. We map those to our semantic types — no
-# vendor SDK involved.
 
-# unified any-llm exception -> expected semantic type.
+# any-llm exception -> expected semantic type.
 MAPPING_CASES = [
     (RateLimitError, ProviderRateLimitError),
     (GatewayTimeoutError, ProviderTimeoutError),
@@ -77,7 +73,7 @@ MAPPING_CASES = [
     (InvalidRequestError, ProviderConfigurationError),
     (ModelNotFoundError, ProviderConfigurationError),
     (ContextLengthExceededError, ProviderConfigurationError),
-    # any-llm's junk drawer: raw transport, 5xx, unclassified -> unexpected.
+    # catch-all: transport, 5xx, unclassified -> unexpected.
     (ProviderError, ProviderUnexpectedError),
 ]
 
@@ -123,10 +119,8 @@ def test_translate_errors_passes_through_semantic():
 
 # --- response-shape contract ----------------------------------------------
 #
-# any-llm normalises every provider to the OpenAI-shaped ChatCompletion /
-# ChatCompletionChunk. These build the *real* any-llm types (not our fakes) and
-# assert our extraction reads them cleanly — so an any-llm upgrade that changed
-# the shape would fail here rather than silently returning empty text.
+# Build the *real* any-llm types (not our fakes) so an upgrade that changed the
+# response shape fails here rather than silently returning empty text.
 
 
 def test_message_text_reads_real_chat_completion():
@@ -177,10 +171,9 @@ def test_delta_text_tolerates_contentless_chunk():
 
 # --- provider integration -------------------------------------------------
 #
-# These exercise the four AnyLLMProvider methods end-to-end against a fake
-# any-llm client, confirming the translation wrapper is actually applied (the
-# classification rules themselves are covered above). We build the exact object
-# shapes any-llm returns, and a fake client whose call behaviour each test sets.
+# Exercise the four AnyLLMProvider methods against a fake any-llm client,
+# confirming the translation wrapper is applied (classification rules covered
+# above).
 
 
 def _completion_response(text):
@@ -303,10 +296,6 @@ def test_stream_translates_sdk_error_mid_iteration():
 
 
 # --- best-effort usage capture -------------------------------------------
-#
-# any-llm sets ``.usage`` only on the terminal chunk (clean finish). The
-# provider peeks it before discarding non-text chunks and fills the shared
-# UsageCapture. No terminal chunk (e.g. cancel) → fields stay None.
 
 
 def test_stream_fills_usage_capture_from_terminal_chunk():
